@@ -4,6 +4,47 @@ import ReactDOM from 'react-dom';
 import App from './App'; */
 import * as serviceWorker from './serviceWorker';
 
+const Notes = () => {
+    const [notes, setNotes] = useState([])
+    const [title, setTitle] = useState('')
+    const [body, setBody] = useState('')
+
+    const addNote = (e) => {
+        e.preventDefault()
+        setNotes([
+            ...notes, { title, body }
+        ])
+        setTitle('')
+        setBody('')
+    }
+
+    const removeNote = (title) => {
+        setNotes(notes.filter((note) => note.title !== title ))
+    }
+
+    return (
+        <div>
+            <h1>My Notes</h1>
+            {/* convert array of objects into an array of jsx */}
+            {notes.map((note) => (
+                <div key={note.title}>
+                    <h3>{note.title}</h3>
+                    <p>{note.body}</p>
+                    <button onClick={() => removeNote(note.title)}>x</button>
+                </div>
+
+            ))}
+            <p>Add Notes</p>
+            <form onSubmit={addNote}>
+                <input value={title} onChange={(e) => setTitle(e.target.value)} />
+                <textarea value={body} onChange={(e) => setBody(e.target.value)} />
+                <button>add</button>
+            </form>
+
+        </div>
+    )
+}
+
 // const Appq = (props) => {
 
 //     const [state, setState] = useState({
@@ -42,7 +83,8 @@ import * as serviceWorker from './serviceWorker';
 //     count: 0
 // }
 
-ReactDOM.render(<Appq count={2}/>, document.getElementById('root'));
+// ReactDOM.render(<Appq count={2}/>, document.getElementById('root'));
+ReactDOM.render(<Notes />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
