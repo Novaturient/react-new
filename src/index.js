@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 /* import './index.css';
 import App from './App'; */
 import * as serviceWorker from './serviceWorker';
 
 const Notes = () => {
-    const [notes, setNotes] = useState([])
+    const notesData = JSON.parse(localStorage.getItem('notes'))
+    const [notes, setNotes] = useState(notesData || [])
     const [title, setTitle] = useState('')
     const [body, setBody] = useState('')
 
@@ -22,6 +23,10 @@ const Notes = () => {
         setNotes(notes.filter((note) => note.title !== title ))
     }
 
+    useEffect(() => {
+        localStorage.setItem('notes', JSON.stringify(notes))
+    })
+
     return (
         <div>
             <h1>My Notes</h1>
@@ -30,6 +35,7 @@ const Notes = () => {
                 <div key={note.title}>
                     <h3>{note.title}</h3>
                     <p>{note.body}</p>
+                    {/* <button onClick={() => removeNote(note.title)}>x</button> */}
                     <button onClick={() => removeNote(note.title)}>x</button>
                 </div>
 
@@ -67,6 +73,11 @@ const Notes = () => {
 
 //     const [count, setCount] = useState(props.count);
 //     const [text, setText] = useState('');
+
+//     useEffect(() => {
+//         console.log("haler")
+//         document.title = count;
+//     })
 
 //     return (
 //         <div>
