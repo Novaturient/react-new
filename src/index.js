@@ -5,8 +5,7 @@ import App from './App'; */
 import * as serviceWorker from './serviceWorker';
 
 const Notes = () => {
-    const notesData = JSON.parse(localStorage.getItem('notes'))
-    const [notes, setNotes] = useState(notesData || [])
+    const [notes, setNotes] = useState([])
     const [title, setTitle] = useState('')
     const [body, setBody] = useState('')
 
@@ -19,13 +18,24 @@ const Notes = () => {
         setBody('')
     }
 
+    //usually asynchronous call; usually used when fetching data from db
+    useEffect(() => {
+        console.log("once only")
+        const notesData = JSON.parse(localStorage.getItem('notes'))
+        if(notesData){
+            setNotes(notesData)
+        }
+    },[])
+
     const removeNote = (title) => {
+        console.log("removing note...")
         setNotes(notes.filter((note) => note.title !== title ))
     }
 
     useEffect(() => {
+        console.log("adding notes to localStorage")
         localStorage.setItem('notes', JSON.stringify(notes))
-    })
+    }, [notes])
 
     return (
         <div>
@@ -51,6 +61,46 @@ const Notes = () => {
     )
 }
 
+
+// const App = (props) => {
+
+//     const [count, setCount] = useState(props.count);
+//     const [text, setText] = useState('');
+
+//     //complete mirror of componentDidMount
+//     //use this just once, useful for reading API
+//     useEffect(() => {
+//         console.log("this should only run once.")
+//     }, [])
+
+//     //accepts optional array as a second argument
+//     //explicitly list out dependencies
+//     useEffect(() => {
+//         console.log("haler")
+//         document.title = count;
+//     },[count])
+
+//     return (
+//         <div>
+//             <p>Hello, current {text || 'count'} is currently {count}.</p>
+//             <button onClick={() => setCount(count + 1)}>+1</button>
+//             <button onClick={() => setCount(props.count)}>reset</button>
+//             <button onClick={() => setCount(count - 1)}>-1</button>
+//             <input type="text" onChange={(e) => setText(e.target.value)}/>
+//         </div>
+//     )
+// }
+
+// App.defaultProps = {
+//     count: 0
+// }
+
+
+
+
+
+
+
 // const Appq = (props) => {
 
 //     const [state, setState] = useState({
@@ -69,30 +119,6 @@ const Notes = () => {
 //     )
 // }
 
-// const App = (props) => {
-
-//     const [count, setCount] = useState(props.count);
-//     const [text, setText] = useState('');
-
-//     useEffect(() => {
-//         console.log("haler")
-//         document.title = count;
-//     })
-
-//     return (
-//         <div>
-//             <p>Hello, current {text || 'count'} is currently {count}.</p>
-//             <button onClick={() => setCount(count + 1)}>+1</button>
-//             <button onClick={() => setCount(props.count)}>reset</button>
-//             <button onClick={() => setCount(count - 1)}>-1</button>
-//             <input type="text" onChange={(e) => setText(e.target.value)}/>
-//         </div>
-//     )
-// }
-
-// App.defaultProps = {
-//     count: 0
-// }
 
 // ReactDOM.render(<Appq count={2}/>, document.getElementById('root'));
 ReactDOM.render(<Notes />, document.getElementById('root'));
