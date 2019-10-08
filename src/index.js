@@ -1,19 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import ReactDOM from 'react-dom';
 /* import './index.css';
 import App from './App'; */
 import * as serviceWorker from './serviceWorker';
 
+const notesReducer = (state, action) => {
+    switch (action.type){
+        case 'POPULATE_NOTES':
+            return action.notes
+        case 'ADD_NOTE':
+            return [
+                ...state,
+                { title: action.title, body: action.body }
+            ]
+        case  'REMOVE_NOTE':
+            return state.filter((note) => note.title !== action.title)
+        default:
+            return state
+    }
+}
+
 const Notes = () => {
-    const [notes, setNotes] = useState([])
+    // const [notes, setNotes] = useState([])
+    const [notes, dispatch] = useReducer(notesReducer, [])
     const [title, setTitle] = useState('')
     const [body, setBody] = useState('')
 
     const addNote = (e) => {
         e.preventDefault()
-        setNotes([
-            ...notes, { title, body }
-        ])
+        // setNotes([
+        //     ...notes, { title, body }
+        // ])
+        dispatch({
+            type: 'ADD_NOTE',
+            title,
+            body
+        })
         setTitle('')
         setBody('')
     }
@@ -21,15 +43,20 @@ const Notes = () => {
     //usually asynchronous call; usually used when fetching data from db
     useEffect(() => {
         console.log("once only")
-        const notesData = JSON.parse(localStorage.getItem('notes'))
-        if(notesData){
-            setNotes(notesData)
+        const notes = JSON.parse(localStorage.getItem('notes'))
+        if(notes){
+            dispatch({ type: 'POPULATE_NOTES',  notes })
+            // setNotes(notesData)
         }
     },[])
 
     const removeNote = (title) => {
         console.log("removing note...")
-        setNotes(notes.filter((note) => note.title !== title ))
+        dispatch({
+            type: 'REMOVE_NOTE',
+            title
+        })
+        // setNotes(notes.filter((note) => note.title !== title ))
     }
 
     useEffect(() => {
